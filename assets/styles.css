@@ -30,16 +30,11 @@ body {
     color: var(--text-main);
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
-    /* Make sure the viewport height is always fully used */
-    min-height: 100vh;
 }
 
 .app-shell {
     max-width: 720px;
     margin: 8px auto 32px;
-    /* Let the active page stretch to fill the vertical space */
-    min-height: calc(100vh - 40px);
-    display: flex;
 }
 
 .container {
@@ -47,10 +42,6 @@ body {
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-soft);
     padding: 24px 20px 24px;
-    /* Allow inner content to stretch and place footers at the bottom */
-    min-height: 100%;
-    display: flex;
-    flex-direction: column;
 }
 
 @media (min-width: 768px) {
@@ -66,11 +57,10 @@ body {
 /* Page visibility control */
 .page {
     display: none;
-    flex: 1 0 auto;
 }
 
 .page.active {
-    display: flex;
+    display: block;
 }
 
 /* Intro section */
