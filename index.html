@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>西浦分院帽：研究生专业意向测试</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <!-- Chart.js via CDN for radar chart -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <main class="app-shell">
+        <!-- Intro / landing section -->
+        <section id="intro-page" class="page page-intro active">
+            <div class="container">
+                <header class="intro-header">
+                    <div class="brand-badge">
+                        <span class="brand-title">XJTLU</span>
+                        <span class="brand-subtitle">Holland Profiler</span>
+                    </div>
+                    <h1 class="welcome-title">👀还在纠结研究生专业选择吗？<br>西浦「分院帽」🎩来咯！</h1>
+                </header>
+
+                <p class="welcome-text">
+                    ✨ <b>本测评基于霍兰德职业兴趣理论：</b><br>
+                    • 帮你梳理职业兴趣倾向<br>
+                    • 匹配更适合的西交利物浦大学研究生专业<br><br>
+                    让兴趣和职业方向对齐，触发更多可能性。<br><br>
+                    <small class="welcome-note">💡 预计 3 分钟 | 结果由预设规则生成，仅供选专业参考</small>
+                </p>
+
+                <!-- Reserved area for future rich media on intro page -->
+                <!-- Future extension: you can insert hero image / background video / campus slideshow here -->
+                <div class="intro-media-slot" aria-hidden="true">
+                    <!-- Placeholder only, safe to replace with real image or video later -->
+                </div>
+
+                <button class="btn btn-primary btn-full" onclick="startTest()">开启魔法分院之旅</button>
+            </div>
+        </section>
+
+        <!-- Test / questionnaire section -->
+        <section id="test-page" class="page page-test">
+            <div class="container">
+                <header class="test-header">
+                    <h2 class="section-title">兴趣问卷</h2>
+                    <p class="section-subtitle">根据直觉作答，没有对错，只和你自己有关。</p>
+                </header>
+
+                <div class="progress-wrapper">
+                    <div id="progress-bar-bg" class="progress-bar-bg">
+                        <div id="progress-bar-inner" class="progress-bar-inner"></div>
+                    </div>
+                    <span id="progress-text" class="progress-text">1 / 24</span>
+                </div>
+
+                <div id="questions-wrapper" class="questions-wrapper"></div>
+
+                <footer class="nav-footer">
+                    <button class="btn btn-secondary btn-nav" id="prevBtn" onclick="move(-1)">上一题</button>
+                    <button class="btn btn-primary btn-nav" id="nextBtn" onclick="move(1)">下一步</button>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Result section -->
+        <section id="result-page" class="page page-result">
+            <div class="container">
+                <header class="result-header">
+                    <h2 class="section-title">分院帽的测评结论</h2>
+                    <p class="section-subtitle">基于你的作答生成的兴趣画像与专业方向建议。</p>
+                </header>
+
+                <div class="result-code-panel">
+                    <span class="result-code-label">你的霍兰德代码：</span>
+                    <div class="code-display" id="final-code">---</div>
+                </div>
+
+                <div class="chart-card">
+                    <h3 class="chart-title">兴趣画像雷达图</h3>
+                    <canvas id="radarChart"></canvas>
+                </div>
+
+                <section id="high-point-analysis" class="high-point-analysis">
+                    <h3 id="combo-title" class="combo-title"></h3>
+                    <p id="combo-desc" class="combo-desc"></p>
+                </section>
+
+                <section class="major-section">
+                    <h3 class="section-subtitle with-accent">推荐的研究生专业</h3>
+                    <div id="major-recommendations" class="major-recommendations"></div>
+                </section>
+
+                <!-- Reserved area for future rich media on result page -->
+                <!-- Future extension: per-major image, short video, or interactive block can be mounted under this slot -->
+                <section class="result-media-slot" aria-label="延伸了解西浦研究生项目的多媒体区域">
+                    <!-- Placeholder only. Replace or extend with image/video/interactive content when assets are ready. -->
+                </section>
+
+                <button class="btn btn-dark btn-full" onclick="location.reload()">重新测试</button>
+            </div>
+        </section>
+    </main>
+
+    <script src="assets/main.js"></script>
+</body>
+</html>
+
