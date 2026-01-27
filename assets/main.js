@@ -66,6 +66,22 @@ const comboData = {
 let cur = 0;
 let answers = new Array(questions.length).fill(null);
 
+// Handle intro video overlay: play on load and fade out after 2 seconds.
+document.addEventListener("DOMContentLoaded", () => {
+    const overlay = document.getElementById("intro-video-overlay");
+    if (!overlay) return;
+
+    const video = overlay.querySelector("video");
+    if (video && typeof video.play === "function") {
+        // Best-effort play; ignore failures from autoplay restrictions.
+        video.play().catch(() => {});
+    }
+
+    setTimeout(() => {
+        overlay.classList.add("hidden");
+    }, 2000);
+});
+
 // Utility to safely update the question area.
 function renderQuestion(index) {
     const wrapper = document.getElementById("questions-wrapper");
