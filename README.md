@@ -70,13 +70,15 @@ Any other static file server (Python’s `http.server`, VS Code “Live Server�
   - Update the Chinese text or reorder questions as needed.
   - Keep each item’s `id` as one of `R`, `I`, `A`, `S`, `E`, `C` so scoring stays correct.
 
-- **Edit combination explanations and majors**:
+- **Edit combination data (from 0129.xlsx “final” sheet)**:
   - In `assets/main.js`, find the `comboData` object.
-  - Each key is a two-letter code (e.g. `AI`, `SE`) mapped to:
-    - `title` – the displayed headline.
-    - `desc` – narrative explanation in Chinese.
-    - `majors` – a `、`-separated list of recommended majors.
-  - Update narratives or majors as needed; the result section automatically reflects these changes.
+  - Each key is a two-letter Holland code (e.g. `AI`, `AR`) mapped to:
+    - `title` – type title (类型称号), e.g. `"AR：匠心独运的建筑师"`.
+    - `desc` – personality analysis in Chinese (性格解析).
+    - `careers` – recommended careers (推荐职业), `、`-separated, e.g. `"建筑师、室内设计师、产品设计师"`.
+    - `majors` – XJTLU postgraduate majors (西浦职业), `、`-separated.
+  - The result page shows: Holland code + type title + personality in `#high-point-analysis`; recommended careers above “推荐的研究生专业”; then recommended majors.
+  - To apply data from `0129.xlsx`: export the “final” sheet (columns: 代码, 类型称号, 性格解析, 推荐职业, 西浦职业) and copy each row into the matching `comboData[代码]` entry.
 
 ### Extending the UI with Images, Video, or Interactive Sections
 
