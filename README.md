@@ -146,6 +146,11 @@ This project is designed to be deployed as a static site on Netlify. A typical d
    - Update DNS records at your domain registrar as instructed by Netlify.
    - Wait for DNS propagation and confirm the tool is reachable at the custom domain.
 
+6. **(Optional) Enable analytics**
+   - Create a [Google Analytics 4](https://analytics.google.com/) property and get your Measurement ID (e.g. `G-XXXXXXXXXX`).
+   - In `index.html`, replace both occurrences of `G-XXXXXXXXXX` with your Measurement ID.
+   - After redeploying, GA4 will record: **page views**, **test_completed** (with `holland_code` and `primary_combo`), and **guide_link_click** (clicks on the 2026 application guide link). View reports in the GA4 dashboard (Reports → Engagement → Events).
+
 After the first deployment, the normal workflow is:
 
 1. Make changes locally (e.g. add a new image/video, adjust question text, or tweak layout).

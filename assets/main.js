@@ -394,9 +394,12 @@ function finish() {
     const careerContainer = document.getElementById("career-recommendations");
     const majorContainer = document.getElementById("major-recommendations");
 
+    const hollandCode = sortedTypes.slice(0, 3).join("");
     if (finalCodeElement) {
-        finalCodeElement.innerText = sortedTypes.slice(0, 3).join("");
+        finalCodeElement.innerText = hollandCode;
     }
+
+    sendEvent("test_completed", { holland_code: hollandCode, primary_combo: primaryCombo });
     if (comboTitleElement) {
         comboTitleElement.innerText = comboDetail.title;
     }
@@ -484,6 +487,23 @@ function finish() {
         });
     }
 }
+
+// Analytics: send custom event only when gtag is configured (replace G-XXXXXXXXXX in index.html with your GA4 Measurement ID).
+function sendEvent(eventName, params) {
+    if (typeof gtag === "function") {
+        gtag("event", eventName, params || {});
+    }
+}
+
+// Track guide banner link clicks (last link on result page).
+document.addEventListener("DOMContentLoaded", () => {
+    const guideLink = document.getElementById("guide-banner-link");
+    if (guideLink) {
+        guideLink.addEventListener("click", () => {
+            sendEvent("guide_link_click", { link_url: "https://mp.weixin.qq.com/s/Cpk3YFlKQ0aBCfVnZaPzNA" });
+        });
+    }
+});
 
 // Expose functions to global scope so they can be called from HTML attributes.
 window.startTest = startTest;
