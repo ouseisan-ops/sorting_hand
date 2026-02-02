@@ -217,6 +217,30 @@ const comboData = {
 let cur = 0;
 let answers = new Array(questions.length).fill(null);
 
+// Split majors string by "、" only when not inside full-width parentheses, so names like "创业与创新（企业和谐治理、创新与传承方向）" stay as one item.
+function splitMajors(majorsStr) {
+    if (Array.isArray(majorsStr)) {
+        return majorsStr.map((m) => (typeof m === "string" ? m.trim() : String(m))).filter((m) => m.length > 0);
+    }
+    const s = typeof majorsStr === "string" ? majorsStr : "";
+    const result = [];
+    let current = "";
+    let depth = 0;
+    for (let i = 0; i < s.length; i++) {
+        const c = s[i];
+        if (c === "（") depth += 1;
+        else if (c === "）") depth -= 1;
+        else if (c === "、" && depth === 0) {
+            if (current.trim()) result.push(current.trim());
+            current = "";
+            continue;
+        }
+        current += c;
+    }
+    if (current.trim()) result.push(current.trim());
+    return result;
+}
+
 // Handle intro video overlay: play on load and fade out after 2 seconds.
 document.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById("intro-video-overlay");
@@ -391,11 +415,7 @@ function finish() {
     if (majorContainer) {
         majorContainer.innerHTML = "";
 
-        const sortedMajors = comboDetail.majors
-            .split("、")
-            .map((major) => major.trim())
-            .filter((major) => major.length > 0)
-            .sort((a, b) => a.length - b.length);
+        const sortedMajors = splitMajors(comboDetail.majors).sort((a, b) => a.length - b.length);
 
         sortedMajors.forEach((major) => {
             const card = document.createElement("div");
