@@ -110,7 +110,7 @@ body {
 .welcome-text {
     margin: 16px 0 20px;
     font-size: 0.98rem;
-    line-height: 1.7;
+    line-height: 2;
     color: var(--text-sub);
 }
 
@@ -123,8 +123,8 @@ body {
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
-    margin: 2px 0;
-    line-height: 1.3;
+    margin: 8px 0;
+    line-height: 1.4;
 }
 
 .welcome-mascot {
@@ -136,7 +136,7 @@ body {
 }
 
 .welcome-disclaimer-box {
-    margin-top: 6px;
+    margin-top: 12px;
     padding: 12px 14px;
     border-radius: var(--radius-md);
     border: 1px solid transparent;
@@ -156,9 +156,9 @@ body {
 
 .welcome-disclaimer-text {
     display: block;
-    margin-top: 4px;
+    margin-top: 6px;
     font-size: 0.85rem;
-    line-height: 1.6;
+    line-height: 1.8;
     color: var(--text-sub);
 }
 
