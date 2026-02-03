@@ -377,12 +377,12 @@ button[disabled] {
 
 .chart-card {
     margin-top: 4px;
-    padding: 14px 12px 10px;
+    padding: 16px 12px 12px;
     border-radius: var(--radius-md);
     background: var(--primary-soft);
     /* Fix height for radar chart container so it does not grow endlessly */
     position: relative;
-    height: 260px;
+    height: 300px;
 }
 
 .chart-title {
@@ -549,7 +549,7 @@ button[disabled] {
     }
 
     .chart-card {
-        height: 320px;
+        height: 380px;
     }
 }
 

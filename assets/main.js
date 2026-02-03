@@ -442,7 +442,14 @@ function finish() {
         new Chart(radarCanvas, {
             type: "radar",
             data: {
-                labels: ["现实型(R)", "研究型(I)", "艺术型(A)", "社会型(S)", "企业型(E)", "传统型(C)"],
+                labels: [
+                    ["🛠️ R 实干型", "(Realistic)"],
+                    ["🔬 I 研究型", "(Investigative)"],
+                    ["🎨 A 艺术型", "(Artistic)"],
+                    ["🤝 S 社会型", "(Social)"],
+                    ["📈 E 企业型", "(Enterprising)"],
+                    ["🗂️ C 常规型", "(Conventional)"]
+                ],
                 datasets: [
                     {
                         label: "你的兴趣画像",
@@ -472,9 +479,11 @@ function finish() {
                         },
                         pointLabels: {
                             font: {
-                                size: 11
+                                size: 11,
+                                lineHeight: 1.3
                             },
-                            color: "#333333"
+                            color: "#333333",
+                            padding: 16
                         }
                     }
                 },
