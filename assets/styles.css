@@ -179,8 +179,8 @@ body {
 /* Section titles */
 .section-title {
     margin: 0;
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: 0.5rem;
+    font-weight: 400;
     color: var(--primary);
 }
 
