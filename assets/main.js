@@ -214,6 +214,35 @@ const comboData = {
     }
 };
 
+// Local storage key for persisting the latest completed test result.
+const STORAGE_KEY = "xjtlu_holland_result_v1";
+
+function saveResultToStorage(payload) {
+    try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    } catch (e) {
+        // Ignore storage errors (e.g. private mode or disabled storage).
+    }
+}
+
+function loadResultFromStorage() {
+    try {
+        const raw = window.localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        return JSON.parse(raw);
+    } catch (e) {
+        return null;
+    }
+}
+
+function clearResultStorage() {
+    try {
+        window.localStorage.removeItem(STORAGE_KEY);
+    } catch (e) {
+        // Ignore storage errors.
+    }
+}
+
 let cur = 0;
 let answers = new Array(questions.length).fill(null);
 
@@ -356,50 +385,17 @@ function move(step) {
     window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// Compute scores and show result page.
-function finish() {
-    const firstUnfilledIndex = answers.findIndex((value) => value === null);
-    if (firstUnfilledIndex !== -1) {
-        alert(`你还有题目没答完哦（第${firstUnfilledIndex + 1}题）`);
-        cur = firstUnfilledIndex;
-        renderQuestion(cur);
-        return;
-    }
-
-    const testPage = document.getElementById("test-page");
-    const resultPage = document.getElementById("result-page");
-    if (testPage) testPage.classList.remove("active");
-    if (resultPage) resultPage.classList.add("active");
-
-    const finalScores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
-    questions.forEach((question, index) => {
-        finalScores[question.id] += answers[index];
-    });
-
-    const sortedTypes = Object.keys(finalScores).sort((a, b) => finalScores[b] - finalScores[a]);
-    const primaryCombo = sortedTypes[0] + sortedTypes[1];
-    const fallbackCombo = sortedTypes[1] + sortedTypes[0];
-    const comboDetail =
-        comboData[primaryCombo] ||
-        comboData[fallbackCombo] || {
-            title: "潜力全才",
-            desc: "你的各维度非常均衡，适合根据个人兴趣深入探索具体学科方向。",
-            careers: "管理、咨询、综合岗位",
-            majors: "管理学"
-        };
-
+// Render result view (code, text blocks, cards, and radar chart) from prepared data.
+function renderResultView(hollandCode, finalScores, comboDetail, primaryCombo) {
     const finalCodeElement = document.getElementById("final-code");
     const comboTitleElement = document.getElementById("combo-title");
     const comboDescElement = document.getElementById("combo-desc");
     const careerContainer = document.getElementById("career-recommendations");
     const majorContainer = document.getElementById("major-recommendations");
 
-    const hollandCode = sortedTypes.slice(0, 3).join("");
     if (finalCodeElement) {
         finalCodeElement.innerText = hollandCode;
     }
-
-    sendEvent("test_completed", { holland_code: hollandCode, primary_combo: primaryCombo });
     if (comboTitleElement) {
         comboTitleElement.innerText = comboDetail.title;
     }
@@ -497,6 +493,52 @@ function finish() {
     }
 }
 
+// Compute scores and show result page.
+function finish() {
+    const firstUnfilledIndex = answers.findIndex((value) => value === null);
+    if (firstUnfilledIndex !== -1) {
+        alert(`你还有题目没答完哦（第${firstUnfilledIndex + 1}题）`);
+        cur = firstUnfilledIndex;
+        renderQuestion(cur);
+        return;
+    }
+
+    const finalScores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+    questions.forEach((question, index) => {
+        finalScores[question.id] += answers[index];
+    });
+
+    const sortedTypes = Object.keys(finalScores).sort((a, b) => finalScores[b] - finalScores[a]);
+    const primaryCombo = sortedTypes[0] + sortedTypes[1];
+    const fallbackCombo = sortedTypes[1] + sortedTypes[0];
+    const comboDetail =
+        comboData[primaryCombo] ||
+        comboData[fallbackCombo] || {
+            title: "潜力全才",
+            desc: "你的各维度非常均衡，适合根据个人兴趣深入探索具体学科方向。",
+            careers: "管理、咨询、综合岗位",
+            majors: "管理学"
+        };
+
+    const hollandCode = sortedTypes.slice(0, 3).join("");
+
+    sendEvent("test_completed", { holland_code: hollandCode, primary_combo: primaryCombo });
+    // Persist result so that browser back/refresh can restore the view.
+    saveResultToStorage({
+        finalScores,
+        sortedTypes,
+        primaryCombo,
+        hollandCode
+    });
+
+    const testPage = document.getElementById("test-page");
+    const resultPage = document.getElementById("result-page");
+    if (testPage) testPage.classList.remove("active");
+    if (resultPage) resultPage.classList.add("active");
+
+    renderResultView(hollandCode, finalScores, comboDetail, primaryCombo);
+}
+
 // Analytics: send custom event only when gtag is configured (replace G-XXXXXXXXXX in index.html with your GA4 Measurement ID).
 function sendEvent(eventName, params) {
     if (typeof gtag === "function") {
@@ -514,8 +556,62 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
+// Restore last completed result (if any) when the page is loaded again.
+document.addEventListener("DOMContentLoaded", () => {
+    const stored = loadResultFromStorage();
+    if (!stored || !stored.finalScores) return;
+
+    const intro = document.getElementById("intro-page");
+    const testPage = document.getElementById("test-page");
+    const resultPage = document.getElementById("result-page");
+    if (intro) intro.classList.remove("active");
+    if (testPage) testPage.classList.remove("active");
+    if (resultPage) resultPage.classList.add("active");
+
+    const finalScores = stored.finalScores;
+    const sortedTypes =
+        Array.isArray(stored.sortedTypes) && stored.sortedTypes.length
+            ? stored.sortedTypes
+            : Object.keys(finalScores).sort((a, b) => finalScores[b] - finalScores[a]);
+
+    const primaryCombo = stored.primaryCombo || (sortedTypes[0] + sortedTypes[1]);
+    const fallbackCombo = sortedTypes[1] + sortedTypes[0];
+    const comboDetail =
+        comboData[primaryCombo] ||
+        comboData[fallbackCombo] || {
+            title: "潜力全才",
+            desc: "你的各维度非常均衡，适合根据个人兴趣深入探索具体学科方向。",
+            careers: "管理、咨询、综合岗位",
+            majors: "管理学"
+        };
+
+    const hollandCode =
+        stored.hollandCode && typeof stored.hollandCode === "string" && stored.hollandCode.length >= 3
+            ? stored.hollandCode
+            : sortedTypes.slice(0, 3).join("");
+
+    renderResultView(hollandCode, finalScores, comboDetail, primaryCombo);
+});
+
+// Public API: restart test from scratch and clear stored result.
+function restartTest() {
+    clearResultStorage();
+    answers = new Array(questions.length).fill(null);
+    cur = 0;
+
+    const intro = document.getElementById("intro-page");
+    const testPage = document.getElementById("test-page");
+    const resultPage = document.getElementById("result-page");
+    if (testPage) testPage.classList.remove("active");
+    if (resultPage) resultPage.classList.remove("active");
+    if (intro) intro.classList.add("active");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
 // Expose functions to global scope so they can be called from HTML attributes.
 window.startTest = startTest;
 window.selectOpt = selectOpt;
 window.move = move;
+window.restartTest = restartTest;
 
