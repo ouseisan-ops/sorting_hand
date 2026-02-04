@@ -596,17 +596,10 @@ document.addEventListener("DOMContentLoaded", () => {
 // Public API: restart test from scratch and clear stored result.
 function restartTest() {
     clearResultStorage();
+    // Full reload ensures DOM state is reset and intro-page becomes active again.
     answers = new Array(questions.length).fill(null);
     cur = 0;
-
-    const intro = document.getElementById("intro-page");
-    const testPage = document.getElementById("test-page");
-    const resultPage = document.getElementById("result-page");
-    if (testPage) testPage.classList.remove("active");
-    if (resultPage) resultPage.classList.remove("active");
-    if (intro) intro.classList.add("active");
-
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.location.reload();
 }
 
 // Expose functions to global scope so they can be called from HTML attributes.
